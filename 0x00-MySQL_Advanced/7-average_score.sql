@@ -12,7 +12,7 @@ IN user_id INT
 
 BEGIN
     -- DECLARE A VARIABLE
-    DECLARE user_avg INT;
+    DECLARE user_avg FLOAT;
     
     -- SET VARIABLE VALUE
     SET user_avg = (SELECT AVG(score) FROM corrections AS C WHERE C.user_id=user_id);
