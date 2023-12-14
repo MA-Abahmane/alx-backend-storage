@@ -1,0 +1,4 @@
+-- Write a SQL script that creates an index idx_name_first_score on the table names and the first letter of name and the score.
+-- To get the first letter of name we do `name(1)`
+
+CREATE INDEX index_name_score ON `names` (name(1), score)
