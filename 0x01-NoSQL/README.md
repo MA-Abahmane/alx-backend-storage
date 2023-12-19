@@ -1,14 +1,15 @@
-# NoSQL Cheat Sheet
+# MongoDB Cheat Sheet
 
-## Types of NoSQL Databases
-
-### 1. Document Store
-
-#### MongoDB
+## Basics
 
 - **Create Database**
   ```bash
   use <database_name>
+  ```
+
+- **Show All Databases**
+  ```bash
+  show dbs
   ```
 
 - **Insert Document**
@@ -16,117 +17,178 @@
   db.<collection_name>.insert({ key: value })
   ```
 
+- **Lists all Document**
+  ```bash
+  db.<collection_name>.find()
+  ```
+
+- **Count all Document**
+  ```bash
+  db.<collection_name>.find().count()
+  ```
+
 - **Query Document**
   ```bash
   db.<collection_name>.find({ key: value })
   ```
 
-### 2. Key-Value Store
-
-#### Redis
-
-- **Set Key-Value Pair**
+- **Update Document**
   ```bash
-  SET key value
+  db.<collection_name>.update({ key: value }, { $set: { new_key: new_value } })
   ```
 
-- **Get Value by Key**
+- **Remove Document**
   ```bash
-  GET key
+  db.<collection_name>.remove({ key: value })
   ```
 
-### 3. Column-family Store
+## Indexing
 
-#### Cassandra
-
-- **Create Keyspace**
+- **Create Index**
   ```bash
-  CREATE KEYSPACE <keyspace_name> WITH replication = {'class': 'SimpleStrategy', 'replication_factor': <factor>}
+  db.<collection_name>.createIndex({ key: 1 })
   ```
 
-- **Create Table**
+- **List All Indexes**
   ```bash
-  CREATE TABLE <table_name> (<column1_name> <type1>, <column2_name> <type2>, PRIMARY KEY (<primary_key>))
+  db.<collection_name>.getIndexes()
   ```
 
-- **Insert Data**
+## Aggregation
+
+- **Aggregate Pipeline**
   ```bash
-  INSERT INTO <table_name> (<column1_name>, <column2_name>) VALUES (<value1>, <value2>)
+  db.<collection_name>.aggregate([ { $group: { _id: "$key", count: { $sum: 1 } } } ])
   ```
 
-### 4. Graph Database
+## Backup and Restore
 
-#### Neo4j
-
-- **Create Node**
+- **Backup Database**
   ```bash
-  CREATE (:Label { key: value })
+  mongodump --db <database_name> --out <backup_directory>
   ```
 
-- **Create Relationship**
+- **Restore Database**
   ```bash
-  MATCH (a:Label1), (b:Label2) WHERE a.key = value1 AND b.key = value2 CREATE (a)-[:RELATIONSHIP]->(b)
+  mongorestore --db <database_name> <backup_directory>/<database_name>
   ```
-
-## Common Operations
-
-- **Indexing**
-  - MongoDB:
-    ```bash
-    db.<collection_name>.createIndex({ key: 1 })
-    ```
-  - Cassandra:
-    ```bash
-    CREATE INDEX ON <table_name> (<column_name>)
-    ```
-
-- **Aggregation**
-  - MongoDB:
-    ```bash
-    db.<collection_name>.aggregate([ { $group: { _id: "$key", count: { $sum: 1 } } } ])
-    ```
-  - Neo4j:
-    ```bash
-    MATCH (n:Label) RETURN n.key, COUNT(n) AS count
-    ```
-
-- **Backup and Restore**
-  - MongoDB:
-    - Backup:
-      ```bash
-      mongodump --db <database_name> --out <backup_directory>
-      ```
-    - Restore:
-      ```bash
-      mongorestore --db <database_name> <backup_directory>/<database_name>
-      ```
-  - Redis:
-    - Backup:
-      ```bash
-      SAVE
-      ```
-    - Restore:
-      ```bash
-      BGSAVE
-      ```
 
 ## Tips and Best Practices
 
 - **Data Modeling**
-  - Choose the database type based on your data structure and access patterns.
-  - Denormalize data when needed for better read performance.
+  - Choose appropriate data types and document structures.
+  - Design for your application's specific queries.
 
-- **Scalability**
-  - NoSQL databases are designed for horizontal scalability. Distribute data across multiple nodes.
+- **Indexing**
+  - Use indexes strategically to optimize query performance.
 
-- **Consistency**
-  - NoSQL databases may provide eventual consistency instead of immediate consistency. Understand and design for your application's requirements.
+- **Scaling**
+  - Horizontal scaling with sharding for large datasets.
 
 - **Security**
-  - Implement proper authentication and authorization mechanisms.
-  - Regularly update and patch your NoSQL database.
+  - Enable authentication and set up user roles.
+  - Regularly audit and update security settings.
 
-- **Monitoring and Optimization**
-  - Monitor database performance and optimize queries for better efficiency.
-  - Utilize caching mechanisms to improve read performance.
+- **Monitoring**
+  - Utilize tools like MongoDB Compass for real-time monitoring.
+  - Keep an eye on slow queries for optimization opportunities.
+
+- **Backup and Recovery**
+  - Regularly schedule backups to prevent data loss.
+  - Test the restore process to ensure data recoverability.
+
+<br>
+<hr>
+<br>
+<hr width='50%'>
+<br>
+<hr>
+
+# MongoDB with Python (PyMongo) Cheat Sheet
+
+## Install PyMongo
+
+```bash
+pip install pymongo
+```
+
+## Connect to MongoDB
+
+```python
+from pymongo import MongoClient
+
+# Connect to the MongoDB server running on localhost
+client = MongoClient('localhost', 27017)
+
+# Access a specific database (create if not exists)
+db = client['your_database_name']
+```
+
+## Insert Documents
+
+```python
+# Insert a single document into a collection
+db.your_collection_name.insert_one({"key": "value"})
+
+# Insert multiple documents into a collection
+data = [{"key1": "value1"}, {"key2": "value2"}]
+db.your_collection_name.insert_many(data)
+```
+
+## Query Documents
+
+```python
+# Find documents in a collection
+result = db.your_collection_name.find({"key": "value"})
+
+# Iterate over the result
+for document in result:
+    print(document)
+```
+
+## Update Documents
+
+```python
+# Update a single document
+db.your_collection_name.update_one({"key": "value"}, {"$set": {"new_key": "new_value"}})
+
+# Update multiple documents
+db.your_collection_name.update_many({"key": "value"}, {"$set": {"new_key": "new_value"}})
+```
+
+## Delete Documents
+
+```python
+# Delete a single document
+db.your_collection_name.delete_one({"key": "value"})
+
+# Delete multiple documents
+db.your_collection_name.delete_many({"key": "value"})
+```
+
+## Count Documents
+
+```python
+# Count the number of documents in a collection
+count = db.your_collection_name.count_documents({})
+print("Number of documents:", count)
+```
+
+## Indexing
+
+```python
+# Create an index on a specific field
+db.your_collection_name.create_index([("key", pymongo.ASCENDING)])
+```
+
+## Close Connection
+
+```python
+# Close the MongoDB connection
+client.close()
+```
+
+Note: Replace `your_database_name` and `your_collection_name` with the actual names of your database and collection.
+
+This cheat sheet covers basic CRUD operations, connection handling, indexing, and more using PyMongo in Python. Customize the code as per your specific requirements.
 
