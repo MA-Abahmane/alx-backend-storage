@@ -38,7 +38,7 @@
   ```
 
 - **Remove Document**
-  ```bash
+  ```bash 
   db.<collection_name>.remove({ key: value })
   ```
   ```bash
