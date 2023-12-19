@@ -41,6 +41,9 @@
   ```bash
   db.<collection_name>.remove({ key: value })
   ```
+  ```bash
+  db.<collection_name>.deleteMany({ key: value })
+  ```
 
 ## Indexing
 
