@@ -18,6 +18,7 @@ from pymongo import MongoClient
 
 
 def log_stats():
+    """ provides some stats about Nginx logs stored in MongoDB """
     # Connect to MongoDB
     client = MongoClient()
     
@@ -44,4 +45,5 @@ def log_stats():
 
 
 if __name__ == "__main__":
+    """ script that provides some stats about Nginx logs stored in MongoDB """
     log_stats()
