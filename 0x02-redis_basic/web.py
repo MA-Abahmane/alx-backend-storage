@@ -5,7 +5,7 @@ Implementing an expiring web cache and tracker
 """
 
 import redis
-import requests as req
+import requests
 from typing import Callable
 from functools import lru_cache, wraps
 
@@ -48,5 +48,5 @@ def get_page(url: str) -> str:
         uses the requests module to obtain the HTML content of
         a particular URL and returns it
     """
-    response = req.get(url)
+    response = requests.get(url)
     return response.text
