@@ -1,52 +1,19 @@
-#!/usr/bin/env python3
-
-"""
-Implementing an expiring web cache and tracker
-"""
-
-import redis
 import requests
-from typing import Callable
-from functools import lru_cache, wraps
+from functools import lru_cache
+import time
 
-# Redis database connection
-db = redis.Redis()
-
-
-def count_calls(func: Callable) -> Callable:
-    """
-        Decorator to count how many times a function is called.
-        Increments the count in the Redis database.
-        Caches the page content with a 10-second expiration time.
-    """
-    @wraps(func)
-    def wrapper(url):
-        """
-            Wrapper function that tracks the number
-            of calls and caches the result.
-        """
-        # Increment the count in Redis
-        db.incr(f'count:{url}')
-        # Check if the page content is already cached
-        cachedPage = db.get(f'cached:{url}')
-
-        # Fetch the page content using the provided function
-        if cachedPage:
-            return cachedPage.decode('UTF-8')
-
-        # Cache the page content with a 10-second expiration time
-        response = func(url)
-        db.setex(f'cashed:{url}', 10, response)
-
-        return response
-    return wrapper
-
-
-@count_calls
+@lru_cache(maxsize=None, typed=False)
 def get_page(url: str) -> str:
-    """
-        uses the requests module to obtain the HTML content of
-        a particular URL and returns it
-    """
+    # Track the access count for the URL
+    get_page.access_count[url] = get_page.access_count.get(url, 0) + 1
+    print(f"Access count for {url}: {get_page.access_count[url]}")
+
+    # Simulate a slow response
+    time.sleep(5)
+
+    # Make the request and return the HTML content
     response = requests.get(url)
     return response.text
+
+# Dictionary to store the access count for each URL
+get_page.access_count = {}
