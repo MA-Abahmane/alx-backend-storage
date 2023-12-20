@@ -13,6 +13,7 @@ from functools import lru_cache
 # Redis database connection
 db = redis.Redis()
 
+
 def Count_calls(func: Callable) -> Callable:
     """
         Decorator to count how many times a function is called.
