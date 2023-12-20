@@ -93,17 +93,25 @@ class Cache:
 
         return key
 
-    def get(self, key: str, f: Optional[Callable] = None) -> Any:
+    def get(self, key: str, fn: Optional[Callable] = None) -> Any:
         """ Get value by key from redis database """
         val = self._redis.get(key)
 
         if not val:
             return
-        if f is int:
-            return int(val)
-        if f is str:
-            return val.decode('UTF-8')
-        if callable(f):
-            return f(val)
+        if fn is int:
+            return self.get_int(val)
+        if fn is str:
+            return self.get_str(val)
+        if callable(fn):
+            return fn(val)
 
         return val
+
+    def get_str(self, value: Any) -> str:
+        """ Convert given value to a string """
+        return value.decode('UTF-8')
+
+    def get_int(self, value: Any) -> int:
+        """ Convert given value to an integer """
+        return int(value)
