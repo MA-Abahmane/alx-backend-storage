@@ -9,17 +9,17 @@ import requests as req
 from typing import Callable
 from functools import lru_cache
 
-
 # Redis database connection
 db = redis.Redis()
 
 
-def Count_calls(func: Callable) -> Callable:
+def count_calls(func: Callable) -> Callable:
     """
         Decorator to count how many times a function is called.
         Increments the count in the Redis database.
         Caches the page content with a 10-second expiration time.
     """
+    @wraps(func)
     def wrapper(url: str) -> str:
         """
             Wrapper function that tracks the number
@@ -42,7 +42,7 @@ def Count_calls(func: Callable) -> Callable:
     return wrapper
 
 
-@Count_calls
+@count_calls
 def get_page(url: str) -> str:
     """
         uses the requests module to obtain the HTML content of
