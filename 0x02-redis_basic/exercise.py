@@ -13,7 +13,7 @@ from typing import Any, Callable, Optional, Union
 def count_calls(method: Callable) -> Callable:
     """ Decorator to count how many times a method is called """
     @wraps(method)
-    def wrapper(self: Any, *args, **kwargs):
+    def wrapper(self: Any, *args, **kwargs) -> str:
         """
             Wraps calls method, adds to the function call
             count and returns the functions results
@@ -27,6 +27,7 @@ def count_calls(method: Callable) -> Callable:
 
         return result
     return wrapper
+
 
 def call_history(method: Callable) -> Callable:
     """ Decorator to track input and output """
@@ -50,6 +51,7 @@ def call_history(method: Callable) -> Callable:
         return result
     return wrapper
 
+
 def replay(fnc: Any) -> None:
     """ Display the history of calls of a particular function """
     key = fnc.__qualname__
@@ -58,9 +60,11 @@ def replay(fnc: Any) -> None:
     # Get the call count from Redis
     callCount = db.get(fnc.__qualname__).decode('UTF-8')
     # Get the list of input arguments from Redis
-    inputs = [inp.decode('UTF-8') for inp in db.lrange(f'{key}:inputs', 0, -1)]
+    inputs = [inp.decode('UTF-8') for inp in db.lrange(f'{key}:inputs',
+                                                       0, -1)]
     # Get the list of output results from Redis
-    outputs = [inp.decode('UTF-8') for inp in db.lrange(f'{key}:outputs', 0, -1)]
+    outputs = [inp.decode('UTF-8') for inp in db.lrange(f'{key}:outputs',
+                                                        0, -1)]
 
     # Print the history of function calls, showing input,
     # arguments and output results
@@ -73,8 +77,8 @@ class Cache:
     """ class Cash """
 
     def __init__(self) -> None:
-        """ Construstor """
-         # Create an instance of the Redis client and flush the database
+        """ Constructor """
+        # Create an instance of the Redis client and flush the database
         self._redis = redis.Redis()
         self._redis.flushdb()
 
