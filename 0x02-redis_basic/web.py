@@ -7,7 +7,7 @@ Implementing an expiring web cache and tracker
 import redis
 import requests as req
 from typing import Callable
-from functools import lru_cache
+from functools import lru_cache, wraps
 
 # Redis database connection
 db = redis.Redis()
@@ -20,7 +20,7 @@ def count_calls(func: Callable) -> Callable:
         Caches the page content with a 10-second expiration time.
     """
     @wraps(func)
-    def wrapper(url: str) -> str:
+    def wrapper(url):
         """
             Wrapper function that tracks the number
             of calls and caches the result.
